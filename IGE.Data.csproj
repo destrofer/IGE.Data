@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <ProjectGuid>{FAF9071E-04E9-4E02-B8CF-DAA0CB54B590}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>Library</OutputType>
+    <RootNamespace>IGE.Data</RootNamespace>
+    <AssemblyName>IGE.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <NoWin32Manifest>False</NoWin32Manifest>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <BaseIntermediateOutputPath>.\obj\$(Configuration)\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>.\obj\$(Configuration)\</IntermediateOutputPath>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <BaseAddress>4194304</BaseAddress>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>.\bin\$(Configuration)\</OutputPath>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath>.\bin\$(Configuration)\</OutputPath>
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
+    <Optimize>True</Optimize>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Articy\Asset.cs" />
+    <Compile Include="Articy\ArticyFlowConnection.cs" />
+    <Compile Include="Articy\Entity.cs" />
+    <Compile Include="Articy\EnumPropertyDefinition.cs" />
+    <Compile Include="Articy\FeatureDefinition.cs" />
+    <Compile Include="Articy\ArticyFlowObject.cs" />
+    <Compile Include="Articy\FlowObjectPin.cs" />
+    <Compile Include="Articy\ArticyObject.cs" />
+    <Compile Include="Articy\IHasReferences.cs" />
+    <Compile Include="Articy\Project.cs" />
+    <Compile Include="Articy\PropertyDefinition.cs" />
+    <Compile Include="Articy\ArticyTemplatedObject.cs" />
+    <Compile Include="Articy\Comment.cs" />
+    <Compile Include="Articy\ArticyCondition.cs" />
+    <Compile Include="Articy\ArticyDialogue.cs" />
+    <Compile Include="Articy\ArticyDialogueFragment.cs" />
+    <Compile Include="Articy\ArticyFlowFragment.cs" />
+    <Compile Include="Articy\ArticyHub.cs" />
+    <Compile Include="Articy\IArticyObject.cs" />
+    <Compile Include="Articy\IArticyTemplatedObject.cs" />
+    <Compile Include="Articy\ArticyInstruction.cs" />
+    <Compile Include="Articy\Jump.cs" />
+    <Compile Include="Processors\Bitmaps\BitmapComposer.cs" />
+    <Compile Include="Processors\Bitmaps\BitmapDecomposer.cs" />
+    <Compile Include="Processors\Bitmaps\BitmapLoader.cs" />
+    <Compile Include="Processors\Bitmaps\BitmapMixer.cs" />
+    <Compile Include="Processors\Bitmaps\BitmapMixerBase.cs" />
+    <Compile Include="Processors\Bitmaps\BitmapSaver.cs" />
+    <Compile Include="Processors\Math\Adder.cs" />
+    <Compile Include="Processors\Math\Constant.cs" />
+    <Compile Include="Processors\Math\Divider.cs" />
+    <Compile Include="Processors\Math\Multiplier.cs" />
+    <Compile Include="Processors\Math\Subtractor.cs" />
+    <Compile Include="Processors\Noise\Converters\NoiseToBitmapConverter.cs" />
+    <Compile Include="Processors\Noise\Generators\PerlinNoiseGenerator.cs" />
+    <Compile Include="Processors\Noise\Generators\SimplexNoiseGenerator.cs" />
+    <Compile Include="Processors\Noise\Generators\WhiteNoiseGenerator.cs" />
+    <Compile Include="Processors\Processor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Articy" />
+    <Folder Include="Processors" />
+    <Folder Include="Processors\Noise" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IGE.Common\IGE.Common.csproj">
+      <Project>{9FF16105-BE2B-44A2-91C0-D79F38AD8BA6}</Project>
+      <Name>IGE.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IGE.Graphics\IGE.Graphics.csproj">
+      <Project>{398C59DB-AD8B-4176-B7B1-90745103723F}</Project>
+      <Name>IGE.Graphics</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
