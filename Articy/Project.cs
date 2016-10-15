@@ -88,7 +88,7 @@ namespace IGE.Data.Articy {
 		/// <param name="templateNamespace">Namespace FQN in entry assembly, where all classes corresponding to the templates in loaded project are located.</param>
 		public Project(string projectFileName, string templateNamespace) {
 			StructuredTextFile project = GameFile.LoadFile<StructuredTextFile>(projectFileName);
-			if( !project.Root.Attributes["xmlns"].Equals("http://www.nevigo.com/schemas/articydraft/2.2/XmlContentExport_FullProject.xsd") )
+			if( !project.Root.Attributes["xmlns"].Equals("http://www.nevigo.com/schemas/articydraft/2.4/XmlContentExport_FullProject.xsd") )
 				throw new UserFriendlyException(
 					String.Format("Loaded file '{0}' is either not an articy full project export or it's version differs from supported. Currently only version 2.2 is supported.", projectFileName),
 					"One of data files is either corupt or has a version that is not supported by the game engine."
@@ -180,12 +180,30 @@ namespace IGE.Data.Articy {
 			IArticyObject parent = null;
 			IArticyObject flowObject;
 			bool loadChildren;
+			ulong uid;
+			DomNode errNode;
+			System.Text.StringBuilder sb;
 			
 			if( data.Name.Equals("Node", StringComparison.OrdinalIgnoreCase) ) {
 				switch( data.Attributes["Type"].ToLower() ) {
 					case "dialogue": goto case "flowfragment";
 					case "flowfragment":
-						if( !m_Objects.TryGetValue(ParseHexValue(data.Attributes["Id"]), out parent) )
+						try {
+							uid = ParseHexValue(data.Attributes["IdRef"]);
+						}
+						catch(UserFriendlyException ex) {
+							errNode = data;
+							sb = new System.Text.StringBuilder();
+							while( errNode != null ) {
+								sb.Append(String.Format("\t{0}\n", errNode.Name));
+								foreach( var attr in errNode.Attributes )
+									sb.Append(String.Format("\t\t{0}={1}\n", attr.Name, attr.Value));
+								errNode = errNode.ParentNode;
+							}
+							GameDebugger.EngineLog(LogLevel.Error, "Error in node:\n{0}", sb.ToString());
+							throw;
+						}
+						if( !m_Objects.TryGetValue(uid, out parent) )
 							throw new UserFriendlyException(
 								String.Format("Cannot load articy project '{0}': object hierarchy contains a '{1}' node that references a non existing object id '{2}'.", projectFileName, data.Attributes["Type"], data.Attributes["Id"]),
 								"One of data files is either corupt or has a version that is not supported by the game engine."
@@ -220,7 +238,22 @@ namespace IGE.Data.Articy {
 					case "instruction": goto case "jump";
 					case "hub": goto case "jump";
 					case "jump":
-						if( !m_Objects.TryGetValue(ParseHexValue(child.Attributes["Id"]), out flowObject) )
+						try {
+							uid = ParseHexValue(child.Attributes["IdRef"]);
+						}
+						catch(UserFriendlyException ex) {
+							errNode = child;
+							sb = new System.Text.StringBuilder();
+							while( errNode != null ) {
+								sb.Append(String.Format("\t{0}\n", errNode.Name));
+								foreach( var attr in errNode.Attributes )
+									sb.Append(String.Format("\t\t{0}={1}\n", attr.Name, attr.Value));
+								errNode = errNode.ParentNode;
+							}
+							GameDebugger.EngineLog(LogLevel.Error, "Error in node:\n{0}", sb.ToString());
+							throw;
+						}
+						if( !m_Objects.TryGetValue(uid, out flowObject) )
 							throw new UserFriendlyException(
 								String.Format("Cannot load articy project '{0}': object hierarchy contains a '{1}' node that references a non existing object id '{2}'.", projectFileName, child.Attributes["Type"], child.Attributes["Id"]),
 								"One of data files is either corupt or has a version that is not supported by the game engine."
@@ -763,9 +796,14 @@ namespace IGE.Data.Articy {
 		#region Helpers
 		
 		public static ulong ParseHexValue(string val) {
-			if( val.StartsWith("0x") )
-				return ulong.Parse(val.Substring(2), NumberStyles.HexNumber);
-			return ulong.Parse(val, NumberStyles.HexNumber);
+			try {
+				if( val.StartsWith("0x") )
+					return ulong.Parse(val.Substring(2), NumberStyles.HexNumber);
+				return ulong.Parse(val, NumberStyles.HexNumber);
+			}
+			catch(FormatException ex) {
+				throw new UserFriendlyException(String.Format("Error parsing hex value \"{0}\"", val), "Error loading game data", ex);
+			}
 		}
 		
 		public static bool TryParseHexValue(string val, out ulong result) {
